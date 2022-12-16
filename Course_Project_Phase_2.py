@@ -1,9 +1,6 @@
-
 #Patrick Conroy
 #CIS261
-#Course Project Part 3: Using Files to Store and Retrieve Data
-
-from datetime import datetime
+#Course Project Part 2: Using Lists and Dictionaries to Store and Retrieve Data
 
 def display_title():
     print("Welcome to Payroll Database")
@@ -48,34 +45,17 @@ def printinfo(EmpDetailList):
     TotalGrossPay = 0.00
     TotalTax = 0.00
     TotalNetPay = 0.00
-    EmpFile = open("Employees.txt", "r")
-    while True:
-        rundate = input("Enter start date for report (MM/DD/YYYY) or All for all data in file: ")
-        if (rundate.upper() == "ALL"):
-            break
-        try:
-            rundate = datetime.strptime(rundate, "%m/%d/%Y")
-            break
-        except ValueError:
-            print("Invalid date format. Please try again.")
-            print()
-            continue
-    while True:
-        EmpDetail = EmpFile.readline()
-        if not EmpDetail:
-            break
-        EmpDetail = EmpDetail.replace("\n", "")
-        EmpList = EmpDetail.split("|")
+    for EmpList in EmpDetailList:
         fromdate = EmpList[0]
-        if (str(rundate).upper() != "ALL"):
-            checkdate = datetime.strptime(fromdate, "%m/%d/%Y")
-            if (checkdate < rundate):
-                continue
         todate = EmpList[1]
         empname = EmpList[2]
-        hours = float(EmpList[3])
-        hourlyrate = float(EmpList[4])
-        tax = float(EmpList[5])       
+        hours = EmpList[3]
+        hourlyrate = EmpList[4]
+        taxrate = EmpList[5]
+
+
+        #write code to assign values to todate, empname, hours, hourlyrate, and taxrate from EmpList
+        
         grosspay, incometax, netpay = CalcTaxNetPay(hours, hourlyrate, tax)
         print(fromdate, todate, empname, f"{hours:,.2f}", f"{hourlyrate:,.2f}", f"{grosspay:,.2f}", f"{tax:,.1%}", f"{incometax:,.2f}", f"{netpay:,.2f}")
         TotalEmployees += 1
@@ -88,11 +68,8 @@ def printinfo(EmpDetailList):
         EmpTotals["TotalGrossPay"] = TotalGrossPay
         EmpTotals["TotalTax"] = TotalTax
         EmpTotals["TotalNetPay"] = TotalNetPay
-        EmpDetailList = True
-    if (EmpDetailList):
-        PrintTotal(EmpTotals)
-    else:
-        print("No details to print.")
+        #write code to assign Totalhours, TotalGrossPay, TotalTax, and TotalNetPay to corresponding dictionary item
+    
 
 #def Totals(TotalEmployees, TotalHours, TotalGrossPay, TotalTax, TotalNetPay):
 
@@ -104,34 +81,48 @@ def printinfo(EmpDetailList):
 
 def PrintTotal(EmpTotals):
     print()
+    #use dictionary to print totals
     print(f'Total Number of Employees: {EmpTotals["TotalEmployees"]}')
     print(f'Total Hours Worked: {EmpTotals["TotalHours"]:,.2f}')
     print(f'Total Gross Pay: {EmpTotals["TotalGrossPay"]:,.2f}')
     print(f'Total Income Tax: {EmpTotals["TotalTax"]:,.2f}')
     print(f'Total Net Pay: {EmpTotals["TotalNetPay"]:,.2f}')
+    #write code to print TotalHours, TotalGrossPay, TotalTax, and TotalNetPay from dictionary
+              
 
 
 if __name__ == "__main__":
-    
-    print()
-    display_title()
-     
-    DetailsPrinted = False  
-    EmpTotals = {} 
-    
-    #print(UserName," is invalid.")
-    EmpFile = open("Employees.txt", "a+")
+#    TotalEmployees = 0
+#    TotalHours = 0.00
+#    TotalGrossPay = 0.00
+#    TotalTax = 0.00
+#    TotalNetPay = 0.00
+
+    EmpDetailList = []
+    EmpTotals = {}
     while True:
-            empname = get_emp_name()
-            if (empname.upper()== "END"):
-                break
-            fromdate, todate = get_dates_worked()
-            hours = get_hours_worked()
-            hourlyrate = get_hourly_rate()
-            tax = get_tax_rate()
-            EmpDetail = fromdate + "|" + todate  + "|" + empname  + "|" + str(hours)  + "|" + str(hourlyrate)  + "|" + str(tax) + "\n"
-            EmpFile.write(EmpDetail)
-    EmpFile.close()
-    printinfo(DetailsPrinted)
-        
-   
+        display_title()
+        empname = get_emp_name()
+        if (empname.upper() == "END"):
+            break
+
+        fromdate, todate = get_dates_worked()
+        hours = get_hours_worked()
+        hourlyrate = get_hourly_rate()
+        tax = get_tax_rate()
+        #grosspay, incometax, netpay = CalcTaxNetPay(hours, hourlyrate, tax)
+        #get_emp_info(empname, hours, hourlyrate, grosspay, tax, incometax, netpay)
+
+        #write code to insert fromdate, todate, empname, hours, hourlyrate, and taxrate into list EmpDetail
+        EmpList = [fromdate, todate, empname, hours, hourlyrate, tax]
+
+        EmpDetailList.append(EmpList)
+
+        #TotalEmployees += 1
+        #TotalHours += hours
+        #TotalGrossPay += grosspay
+        #TotalTax += incometax
+        #TotalNetPay += netpay
+
+    printinfo(EmpDetailList)
+    PrintTotal(EmpTotals)
